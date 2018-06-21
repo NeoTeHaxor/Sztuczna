@@ -23,7 +23,7 @@ import static java.nio.file.Files.readAllBytes;
 
 public class Image {
 
-
+public static int i = 0;
 
 public static void predict(String imagepath) throws InterruptedException, IOException {
     byte[] graphDef = readAllBytesOrExit(Paths.get( "tensorflow_siec/output_graph.pb"));
@@ -48,8 +48,40 @@ public static void predict(String imagepath) throws InterruptedException, IOExce
                 String.format("BEST MATCH: %s (%.2f%% likely)",
                         labels.get(bestLabelIdx),
                         labelProbabilities[bestLabelIdx] * 100f));
+
+        Swiat.Info.setSmieci(++i);
+        System.out.println("Smieci zebranych: " + Swiat.Info.getSmieci());
+
     }
 }
+
+
+    public static void predictNumber(String imagepath) throws InterruptedException, IOException {
+        byte[] graphDef = readAllBytesOrExit(Paths.get( "numery_domow/output_graph.pb"));
+        List<String> labels =
+                readAllLinesOrExit(Paths.get( "numery_domow/output_labels.txt"));
+        byte[] imageBytes = readAllBytesOrExit(Paths.get(imagepath));
+
+        try (Tensor<Float> image = constructAndExecuteGraphToNormalizeImage(imageBytes)) {
+            float[] labelProbabilities = executeInceptionGraph(graphDef, image);
+            int bestLabelIdx = maxIndex(labelProbabilities);
+
+            // f.add(new JLabel(new ImageIcon(imagepath)));
+
+            Frame f = new Frame();
+            f.add(new JLabel(new ImageIcon(new ImageIcon(imagepath).getImage().getScaledInstance(700, 700, 30))));
+
+            f.setVisible(true);
+            Thread.sleep(3000);
+            f.setVisible(false);
+
+            System.out.println(
+                    String.format("Numer domu: %s (%.2f%% likely)",
+                            labels.get(bestLabelIdx),
+                            labelProbabilities[bestLabelIdx] * 100f));
+
+        }
+    }
 
 
     private static Tensor<Float> constructAndExecuteGraphToNormalizeImage(byte[] imageBytes) {

@@ -151,6 +151,18 @@ public class Swiat extends JFrame
             System.out.println(next);
             Image.predict(dir+"/"+next);
 
+
+        File  dirN = new File("numery_domow/photos/");
+        File[] files = dirN.listFiles();
+
+        Random rando = new Random();
+
+        File file = files[rando.nextInt(files.length)];
+        Image.predictNumber(file.toString());
+
+
+
+
         //Image.predict("resources/"+smiec);
       //  Image.predict("/Users/dymitrsoltysiak/Desktop/plastic.jpg");
 
@@ -231,6 +243,10 @@ public class Swiat extends JFrame
             g.drawString("WYSYPISKO", 1080, 50);
             g.drawImage(arrow, 1050, 85, this);
             g.drawImage(wysypisko, 1100, 50, this);
+
+
+            g.setFont(new Font("Courier New", Font.BOLD, 18));
+            g.drawString("Smieci zebranych: " + Info.getSmieci(), 5, 30);
 
 
 
@@ -433,6 +449,25 @@ public class Swiat extends JFrame
 
         public void setZablokowaneY(ArrayList<Integer> list) {
             this.listY = list;
+        }
+
+
+    }
+
+
+    public static final class Info {
+            static int smieciAll = 0;
+            int plastik;
+            int papier;
+            int szklo;
+            int aluminium;
+
+        public static int getSmieci() {
+            return smieciAll;
+        }
+
+        public static void setSmieci(int smieci) {
+            smieciAll = smieci;
         }
 
 
